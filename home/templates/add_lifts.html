@@ -1,0 +1,68 @@
+{% extends 'base.html' %}
+{% block content %}
+{% load static %}
+<link rel="stylesheet" href="{% static 'add_lift.css' %}">
+    <h1>Add Lift for {{ date }} {{ workoutType }}</h1>
+    <div class="addLiftContainer">
+        <form method="post">
+            {% csrf_token %}
+            <div class="form-group">
+                {{ form.lift.label_tag }} {{ form.lift }}
+            </div>
+            <div class="button-container">
+                <button type="button" id="add-set" class="add-set">Add set</button>
+                <button type="submit" class="save">Save</button>
+            </div>
+            {{ formset.management_form }}
+
+            <div id="set-forms">
+                {% for form in formset %}
+                <hr/>
+                <br/>
+                <div class="set-form">
+                    {{ form.reps.label_tag }} {{ form.reps }}
+                    {{ form.weight.label_tag }} {{ form.weight }}
+                    <button type="button" class="remove-set">&#x1F5D1;</button>
+                </div>
+                {% endfor %}
+            </div>
+
+            <div id="empty-form" style="display: none;" class="set-form">
+                <div>Reps: <input type="number" name="sets-__prefix__-reps"  id="id_sets-__prefix__-reps"></div>
+                <div>Weight: <input type="number" name="sets-__prefix__-weight"  id="id_sets-__prefix__-weight"></div>
+                <button type="button" class="remove-set">&#x1F5D1;</button>
+            </div>
+        </form>     
+    </div>
+
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script>
+$(document).ready(function() {
+    var totalForms = $('#id_sets-TOTAL_FORMS');
+
+    $('#add-set').click(function() {
+        var formIdx = parseInt(totalForms.val());
+        var newForm = $('#empty-form').clone(true);
+        newForm.find(':input').each(function() {
+            if ($(this).attr('name')) {
+                var name = $(this).attr('name').replace('__prefix__', formIdx);
+                var id = 'id_' + name;
+                $(this).attr({'name': name, 'id': id}).removeAttr('required');
+            }
+        });
+        newForm.css('display', 'flex');
+        newForm.css('text-align', 'start');
+        newForm.css('align-items', 'flex-start');
+        newForm.find(':input').attr('required', 'required');
+        $('#set-forms').append(newForm);
+        totalForms.val(formIdx + 1);
+    });
+
+    $(document).on('click', '.remove-set', function() {
+        $(this).closest('.set-form').remove();
+        var formIdx = parseInt(totalForms.val()) - 1;
+        totalForms.val(formIdx);
+    });
+});
+</script>
+{% endblock %}

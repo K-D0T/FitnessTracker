@@ -1,0 +1,50 @@
+{% load static %}
+<!-- base.html -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&display=swap" rel="stylesheet">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fitness Tracker</title>
+
+    <link rel="stylesheet" href="{% static 'main.css' %}">
+    {% block extra_head %}{% endblock %}
+</head>
+<body>
+    {% block content %}{% endblock %}
+    <nav class="nav">
+        <input id="menu" type="checkbox">
+        <label for="menu">Menu</label>
+        <ul class="menu">
+            <li>
+                <a href="{% url 'home:home' %}">
+                    <span>Home</span>
+                    <i class="fas fa-home" aria-hidden="true"></i>
+                </a>
+            </li>
+            <li>
+                <a href="{% url 'home:create_workout' %}">
+                    <span>Create Workout</span>
+                    <i class="fas fa-address-card" aria-hidden="true"></i>
+                </a>
+            </li>
+            <li>
+                <a href="{% url 'home:all_workouts' %}">
+                    <span>All Workouts</span>
+                    <i class="fas fa-tasks" aria-hidden="true"></i>
+                </a>
+            </li>
+            <li>
+                <a href="{% url 'home:motivation' %}">
+                    <span>Motivation</span>
+                    <i class="fas fa-tasks" aria-hidden="true"></i>
+                </a>
+            </li>
+        </ul>
+    </nav>
+    
+</body>
+</html>

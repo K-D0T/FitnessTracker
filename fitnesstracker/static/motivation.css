@@ -1,0 +1,34 @@
+.quoteContainer {
+    display: flex;
+    justify-content: flex-start;
+    align-items: flex-start;
+    flex-direction: column;
+    margin-top: 30px;
+    margin-bottom: 15px;
+    border-radius: 4px;
+    padding: 20px;
+    text-align: start;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.videosContainer {
+    width: 100%;
+}
+
+.motivationContainer {
+    margin-bottom: 30px;
+}
+
+/* CSS rules for screens smaller than 600px */
+@media (max-width: 600px) {
+    body {
+        padding: 10px;
+        padding-bottom: 100px;
+    }
+
+    .quoteContainer {
+        margin-top: 15px;
+        margin-bottom: 20px;
+        padding: 10px;
+    }
+}

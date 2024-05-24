@@ -1,0 +1,251 @@
+# lift_names_fixtures.yaml
+
+- model: home.liftname
+  pk: 1
+  fields:
+    name: Bench Press
+
+- model: home.liftname
+  pk: 2
+  fields:
+    name: Shoulder Press
+
+- model: home.liftname
+  pk: 3
+  fields:
+    name: Tricep Dips
+
+- model: home.liftname
+  pk: 4
+  fields:
+    name: Pull Ups
+
+- model: home.liftname
+  pk: 5
+  fields:
+    name: Deadlift
+
+- model: home.liftname
+  pk: 6
+  fields:
+    name: Bicep Curls
+
+- model: home.liftname
+  pk: 7
+  fields:
+    name: Squats
+
+- model: home.liftname
+  pk: 8
+  fields:
+    name: Leg Press
+
+- model: home.liftname
+  pk: 9
+  fields:
+    name: Calf Raises
+
+- model: home.liftname
+  pk: 10
+  fields:
+    name: Tricep Extensions
+
+- model: home.liftname
+  pk: 11
+  fields:
+    name: Hammer Curls
+
+- model: home.liftname
+  pk: 12
+  fields:
+    name: Lat Pulldowns
+
+- model: home.liftname
+  pk: 13
+  fields:
+    name: Dumbbell Rows
+
+- model: home.liftname
+  pk: 14
+  fields:
+    name: Leg Curls
+
+- model: home.liftname
+  pk: 15
+  fields:
+    name: Leg Extensions
+
+- model: home.liftname
+  pk: 16
+  fields:
+    name: Chest Flyes
+
+- model: home.liftname
+  pk: 17
+  fields:
+    name: Incline Bench Press
+
+- model: home.liftname
+  pk: 18
+  fields:
+    name: Barbell Rows
+
+- model: home.liftname
+  pk: 19
+  fields:
+    name: Overhead Tricep Extensions
+
+- model: home.liftname
+  pk: 20
+  fields:
+    name: Seated Shoulder Press
+
+- model: home.liftname
+  pk: 21
+  fields:
+    name: Dumbbell Bench Press
+
+- model: home.liftname
+  pk: 22
+  fields:
+    name: Cable Crossovers
+
+- model: home.liftname
+  pk: 23
+  fields:
+    name: Preacher Curls
+
+- model: home.liftname
+  pk: 24
+  fields:
+    name: Skull Crushers
+
+- model: home.liftname
+  pk: 25
+  fields:
+    name: T-Bar Rows
+
+- model: home.liftname
+  pk: 26
+  fields:
+    name: Front Squats
+
+- model: home.liftname
+  pk: 27
+  fields:
+    name: Bulgarian Split Squats
+
+- model: home.liftname
+  pk: 28
+  fields:
+    name: Sumo Deadlift
+
+- model: home.liftname
+  pk: 29
+  fields:
+    name: Hack Squats
+
+- model: home.liftname
+  pk: 30
+  fields:
+    name: Glute Bridge
+
+- model: home.liftname
+  pk: 31
+  fields:
+    name: Hip Thrust
+
+- model: home.liftname
+  pk: 32
+  fields:
+    name: Farmers Walk
+
+- model: home.liftname
+  pk: 33
+  fields:
+    name: Plank
+
+- model: home.liftname
+  pk: 34
+  fields:
+    name: Russian Twists
+
+- model: home.liftname
+  pk: 35
+  fields:
+    name: Hanging Leg Raises
+
+- model: home.liftname
+  pk: 36
+  fields:
+    name: Side Plank
+
+- model: home.liftname
+  pk: 37
+  fields:
+    name: Bicycle Crunches
+
+- model: home.liftname
+  pk: 38
+  fields:
+    name: Mountain Climbers
+
+- model: home.liftname
+  pk: 39
+  fields:
+    name: Cable Rows
+
+- model: home.liftname
+  pk: 40
+  fields:
+    name: Face Pulls
+
+- model: home.liftname
+  pk: 41
+  fields:
+    name: Upright Rows
+
+- model: home.liftname
+  pk: 42
+  fields:
+    name: Shrugs
+
+- model: home.liftname
+  pk: 43
+  fields:
+    name: Tricep Kickbacks
+
+- model: home.liftname
+  pk: 44
+  fields:
+    name: Concentration Curls
+
+- model: home.liftname
+  pk: 45
+  fields:
+    name: Incline Dumbbell Curls
+
+- model: home.liftname
+  pk: 46
+  fields:
+    name: Standing Calf Raises
+
+- model: home.liftname
+  pk: 47
+  fields:
+    name: Seated Calf Raises
+
+- model: home.liftname
+  pk: 48
+  fields:
+    name: Chest Press
+
+- model: home.liftname
+  pk: 49
+  fields:
+    name: Pec Deck
+
+- model: home.liftname
+  pk: 50
+  fields:
+    name: Cable Tricep Pushdowns

@@ -1,0 +1,196 @@
+{% extends 'base.html' %}
+
+{% block content %}
+{% load static %}
+
+<link rel="stylesheet" href="{% static 'home.css' %}">
+<!-- Include the Chart.js library and the date-fns adapter -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/chartjs-adapter-date-fns"></script>
+
+<div class="headingcontainer">
+    <div class="row">
+        <div class="col-md-12">
+            <h1 class="text-center" style="font-size: 3em;">WELCOME TO YOUR FITNESS TRACKER</h1>
+        </div>
+    </div>
+
+
+
+    <!-- Create a canvas element where the chart will be displayed -->
+    <canvas id="liftsOverTimeChart" style="padding-top: 20px;" width="100%" height="100%"></canvas>
+    <canvas id="bodyWeightChart" style="padding-bottom: 20px;"></canvas>
+    <form id="bodyweightForm" method="POST" style="display: none;">
+        {% csrf_token %}
+        {{ bodyWeightForm.weight }}
+        <button class="submitbutton">Submit</button>
+    </form>
+    <button id="showFormButton" class="bodyweightbutton">Add Bodyweight</button>
+    <!-- Container to store goals -->
+    <div class="goalsContainer">
+        <h2 style="padding-bottom: 15px;">Goals</h2>
+        
+
+        {% for goal in goals %}
+            <!-- Each goal is wrapped in a div with a checkbox and a label -->
+            <div class="goal">
+
+                <!-- The checkbox is used to mark the goal as completed -->
+                <div class="checkbox-wrapper-47">
+                    <p>{{ forloop.counter }}.</p>
+                    <input type="checkbox" id="goal{{ forloop.counter }}" data-goal-id="{{ goal.id }}" {% if goal.completed %}checked{% endif %}>
+                    <label style="margin-left: 10px;" for="goal{{ forloop.counter }}" {% if goal.completed %}class="label-completed"{% endif %}>{{ goal }}</label>
+                </div>
+            </div>
+        {% endfor %}
+    </div>
+    
+    <!-- Form to add a new goal (hidden by default) -->
+    <form id="goalForm" method="POST" style="display: none;">
+        {% csrf_token %}
+        {{ goalForm.goal }}
+        <button class="submitGoalbutton">Submit Goal</button>
+    </form>
+    <!-- Button to add a new goal -->
+    <button id="newGoalButton">New Goal</button>
+    
+    
+    
+</div>
+
+<script>
+    // Get all checkboxes and labels
+    var checkboxes = document.querySelectorAll('input[type=checkbox]');
+    var labels = document.querySelectorAll('label');
+    
+    // Add a click event listener to each checkbox
+    checkboxes.forEach(function(checkbox, index) {
+        checkbox.addEventListener('click', function() {
+            // Get the goal ID from the data attribute
+            var goalId = this.dataset.goalId;
+    
+            // Send an AJAX request to the server
+            var xhr = new XMLHttpRequest();
+            xhr.open('POST', '/update_goal/', true);  // Replace '/update_goal/' with the actual URL
+            xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
+            xhr.setRequestHeader('X-CSRFToken', '{{ csrf_token }}');
+            xhr.send('goalId=' + goalId + '&completed=' + this.checked);
+    
+            // Cross off the label if the checkbox is checked
+            if (this.checked) {
+                labels[index].classList.add('label-completed');
+            } else {
+                labels[index].classList.remove('label-completed');
+            }
+        });
+    
+        // Check the checkbox and cross off the label if the goal is completed
+        if (checkbox.dataset.completed == 'true') {
+            checkbox.checked = true;
+            labels[index].classList.add('label-completed');
+        }
+    });
+
+
+    var ctx = document.getElementById('bodyWeightChart').getContext('2d');
+    var chart = new Chart(ctx, {
+        type: 'line',
+        data: {
+            labels: {{ dates|safe }},
+            datasets: [{
+                label: 'Body Weight',
+                data: {{ weights|safe }},
+                borderColor: 'rgb(75, 192, 192)',
+                tension: 0.5,
+            }]
+        },
+        options: {
+            plugins: {
+                        title: {
+                            display: true,
+                            text: 'Body Weight Over Time'
+                        }
+                    },
+            scales: {
+                x: {
+                    type: 'time',
+                    time: {
+                        unit: 'week'
+                    }
+                },
+                y: {
+                    beginAtZero: false
+                }
+            }
+        }
+    });
+
+    document.getElementById('showFormButton').addEventListener('click', function() {
+        // Show the form when the button is clicked
+        document.getElementById('bodyweightForm').style.display = 'block';
+    });
+
+    document.getElementById('newGoalButton').addEventListener('click', function() {
+            document.getElementById('goalForm').style.display = 'block';
+    });
+
+    window.onload = function() {
+        // Get the canvas context
+        var ctx = document.getElementById('liftsOverTimeChart').getContext('2d');
+
+        // Make an AJAX request to the Django view
+        fetch('/get_workout_data/')
+            .then(response => response.json())
+            .then(data => {
+                // Create a set of all unique dates
+                const allDates = [...new Set(Object.values(data).flatMap(lift => lift.dates))].sort();
+        
+                const datasets = Object.keys(data).map(liftName => {
+                    // Filter the dates and lift values to exclude null values
+                    const filteredDatesAndValues = data[liftName].dates.map((date, index) => {
+                        if (data[liftName].liftValues[index] !== null) {
+                            return { x: date, y: data[liftName].liftValues[index] };
+                        }
+                    }).filter(item => item !== undefined);
+                
+                    return {
+                        label: liftName,
+                        data: filteredDatesAndValues,
+                        fill: false,
+                        borderColor: '#' + Math.floor(Math.random()*16777215).toString(16),  // Random color
+                    };
+                });
+        
+                const ctx = document.getElementById('liftsOverTimeChart').getContext('2d');
+                new Chart(ctx, {
+                    type: 'line',
+                    data: {
+                        labels: allDates,
+                        datasets: datasets,
+                    },
+                    options: {
+                        plugins: {
+                            title: {
+                                display: true,
+                                text: 'Weight Moved Over Time'
+                            }
+                        },
+                        scales: {
+                            xAxes: [{
+                                type: 'time',
+                                time: {
+                                    parser: 'YYYY-MM-DD',
+                                },
+                            }],
+                        },
+                    },
+                });
+            });
+    };
+</script>
+
+        
+
+
+    
+{% endblock %}

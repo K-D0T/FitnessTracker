@@ -1,0 +1,152 @@
+{% extends 'base.html' %}
+
+{% block content %}
+{% load static %}
+<link rel="stylesheet" href="{% static 'workout_detail.css' %}">
+<body>
+    <h1>Fitness Tracker</h1>
+    <h2>Workout {{ workout.split }} - {{ workout.date }}</h2>
+    {% for data in workout_data %}
+        <div class="lift">
+            <h3 class="lift-header" data-lift-id="{{ data.lift.id }}">
+                {{ data.lift.lift }} (Sets: {{ data.sets|length }})
+            </h3>
+            <div class="sets-table-container" id="sets-{{ data.lift.id }}" style="display: none;">
+                <table class="sets-table">
+                    <thead>
+                        <tr>
+                            <th>Reps</th>
+                            <th>Weight</th>
+                            <th>Action</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for set in data.sets %}
+                        <tr>
+                            <form method="post">
+                                {% csrf_token %}
+                            </form>
+                            <th>Reps: {{ set.reps }}</th>
+                            <th>Weight: {{ set.weight }}</th>
+                            <td><button class="remove-set" data-set-id="{{ set.id }}">&#x1F5D1;</button></td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+            
+        </div>
+        <hr style="width: 100%;">
+        
+    {% endfor %}
+    <a href="{% url 'home:add_lifts' workout.id %}"><button>Add Lift</button></a>
+    <div class="rating-container">
+        <span class="rating-label">Rate this workout:</span>
+        <div class="stars" data-workout-id="{{ workout.id }}">
+            <span class="star" data-value="1">★</span>
+            <span class="star" data-value="2">★</span>
+            <span class="star" data-value="3">★</span>
+            <span class="star" data-value="4">★</span>
+            <span class="star" data-value="5">★</span>
+        </div>
+        <div id="rating-result"></div>
+    </div>
+</body>
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script>
+$(document).ready(function() {
+    var csrftoken = jQuery("[name=csrfmiddlewaretoken]").val();
+
+    $('.remove-set').click(function() {
+        var setId = $(this).data('set-id');
+        var $this = $(this);
+        $.ajax({
+            url: '/remove_set/' + setId + '/',
+            type: 'POST',
+            headers: {'X-CSRFToken': csrftoken},
+            success: function(response) {
+                if (response['success']) {
+                    $this.closest('tr').remove();
+                    var $lift = $this.closest('.lift');
+                    if ($lift.find('tr').length == 0) {
+                        $lift.remove();
+                    }
+                } else {
+                    alert('An error occurred');
+                }
+            }
+        });
+    });
+});
+$(document).ready(function() {
+    $('.lift-header').click(function() {
+        var liftId = $(this).data('lift-id');
+        $('#sets-' + liftId).toggle();
+    });
+});
+
+
+document.addEventListener('DOMContentLoaded', function() {
+    const stars = document.querySelectorAll('.star');
+    const ratingResult = document.getElementById('rating-result');
+    const workoutId = document.querySelector('.stars').getAttribute('data-workout-id');
+
+    stars.forEach(star => {
+        star.addEventListener('click', handleClick);
+    });
+
+    function handleClick(event) {
+        const value = event.target.getAttribute('data-value');
+        highlightStars(value);
+        ratingResult.textContent = `You rated this workout ${value} stars.`;
+        sendRatingToServer(workoutId, value);
+    }
+
+    function highlightStars(value) {
+        stars.forEach(star => {
+            if (star.getAttribute('data-value') <= value) {
+                star.classList.add('selected');
+            } else {
+                star.classList.remove('selected');
+            }
+        });
+    }
+
+    function sendRatingToServer(workoutId, rating) {
+        fetch(`/rate_workout/${workoutId}/`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRFToken': getCookie('csrftoken')
+            },
+            body: JSON.stringify({ rating: rating })
+        })
+        .then(response => response.json())
+        .then(data => {
+            console.log('Rating saved:', data);
+        })
+        .catch(error => {
+            console.error('Error saving rating:', error);
+        });
+    }
+
+    function getCookie(name) {
+        let cookieValue = null;
+        if (document.cookie && document.cookie !== '') {
+            const cookies = document.cookie.split(';');
+            for (let i = 0; i < cookies.length; i++) {
+                const cookie = cookies[i].trim();
+                if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                    cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                    break;
+                }
+            }
+        }
+        return cookieValue;
+    }
+});
+
+
+
+</script>
+{% endblock %}

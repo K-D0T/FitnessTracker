@@ -1,0 +1,38 @@
+{% extends 'base.html' %}
+
+{% block content %}
+{% load static %}
+
+<link rel="stylesheet" href="{% static 'all_workouts.css' %}">
+    <h1 style="font-size: 3em;">All Workouts</h1>
+    <div class="all_workouts_container">
+        {% for workout_data in workouts_data %}
+            <a href="{% url 'home:workout_detail' workout_data.workout.id %}">
+                <div class="workout_container">
+                    <div class="workout_container_header">
+                        <h2>
+                            {% if workout_data.workout.split == "PU" %}
+                                Push Workout
+                            {% elif workout_data.workout.split == "PL" %}
+                                Pull Workout
+                            {% elif workout_data.workout.split == "LG" %}
+                                Leg Workout
+                            {% elif workout_data.workout.split == "AR" %}
+                                Arm Workout
+                            {% else %}
+                                {{ workout_data.workout.split }} Workout
+                            {% endif %}
+                        </h2>
+                        <p>{{ workout_data.workout.date }}</p>
+                        
+                    </div> 
+                    <div class="workout_container_footer">
+
+                        <p>BW: {{ workout_data.bodyweight.weight }}</p>
+                        <p>Rating: {{ workout_data.rating_stars }}</p>
+                    </div>
+                </div>
+            </a>
+        {% endfor %}
+    </div>
+{% endblock %}
