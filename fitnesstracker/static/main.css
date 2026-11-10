@@ -187,3 +187,55 @@ button {
         transform: translate(-35px, -90px);
     }
 }
+
+/* Sign-in page and the nav's sign-out control. */
+.login-form {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 12px;
+    margin-top: 24px;
+}
+
+.login-form input {
+    padding: 8px 10px;
+    border: none;
+    border-radius: 4px;
+    font-family: inherit;
+    font-size: 1rem;
+}
+
+.login-error,
+.form-error {
+    color: #cf6679;
+    margin-top: 12px;
+}
+
+.login-hint {
+    margin-top: 24px;
+    font-size: 0.9rem;
+    opacity: 0.75;
+}
+
+.login-hint code {
+    font-family: monospace;
+    background-color: #1b1b1b;
+    padding: 2px 6px;
+    border-radius: 3px;
+}
+
+.logout-form {
+    margin: 0;
+}
+
+.logout-button {
+    background: none;
+    border: none;
+    color: inherit;
+    font-family: inherit;
+    font-size: inherit;
+    cursor: pointer;
+    padding: 0;
+    width: 100%;
+    text-align: inherit;
+}
