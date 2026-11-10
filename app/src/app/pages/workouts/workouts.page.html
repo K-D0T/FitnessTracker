@@ -1,0 +1,39 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-title>Workouts</ion-title>
+    <ion-buttons slot="end">
+      <ion-button (click)="startWorkout()">New</ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <ion-refresher slot="fixed" (ionRefresh)="handleRefresh($event)">
+    <ion-refresher-content></ion-refresher-content>
+  </ion-refresher>
+
+  @if (loading()) {
+    <div class="ion-padding ion-text-center"><ion-spinner name="crescent"></ion-spinner></div>
+  } @else if (error()) {
+    <div class="ion-padding"><ion-note color="danger">{{ error() }}</ion-note></div>
+  } @else if (rows().length === 0) {
+    <div class="ion-padding ion-text-center">
+      <p>No workouts logged yet.</p>
+      <ion-button (click)="startWorkout()">Start your first one</ion-button>
+    </div>
+  } @else {
+    <ion-list>
+      @for (row of rows(); track row.workout.id) {
+        <ion-item [routerLink]="['/workouts', row.workout.id]" button detail>
+          <ion-label>
+            <h2>{{ splitLabels[row.workout.split] }}</h2>
+            <p>{{ row.workout.date }} &middot; {{ row.stars }}</p>
+          </ion-label>
+          @if (row.bodyweight !== null) {
+            <ion-badge slot="end">{{ row.bodyweight }}</ion-badge>
+          }
+        </ion-item>
+      }
+    </ion-list>
+  }
+</ion-content>
