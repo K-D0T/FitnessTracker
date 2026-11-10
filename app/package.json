@@ -6,7 +6,9 @@
     "start": "ng serve",
     "build": "ng build",
     "watch": "ng build --watch --configuration development",
-    "test": "ng test"
+    "test": "ng test",
+    "ios:sync": "ng build && cap sync ios",
+    "ios:open": "cap open ios"
   },
   "private": true,
   "packageManager": "npm@10.9.9",
@@ -19,6 +21,7 @@
     "@angular/platform-browser": "^22.2.0",
     "@angular/router": "^22.2.0",
     "@capacitor/core": "^8.6.0",
+    "@capacitor/ios": "^8.6.0",
     "@ionic/angular": "^9.0.10",
     "@supabase/supabase-js": "^2.119.0",
     "chart.js": "^4.6.1",
