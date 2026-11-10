@@ -1,96 +1,15 @@
-from django.shortcuts import render, redirect
-from .forms import WorkoutForm, LiftForm, SetForm, BodyWeightForm, GoalsForm
-from .models import Workout, Lift, Set, BodyWeight, Goals
-from django.utils import timezone
 from django.forms import formset_factory
 from django.http import JsonResponse
-from collections import defaultdict
-import time
 from django.db.models import Max
+from django.shortcuts import render, redirect
+from django.utils import timezone
 from django.views.decorators.csrf import csrf_exempt
-from openai import OpenAI
-from dotenv import load_dotenv
-import os
 import json
-from django.core.exceptions import ObjectDoesNotExist
-from datetime import datetime, timedelta
 import random
-# Load the environment variables from the .env file
-load_dotenv()
 
-# Ensure API key is set
-if "OPENAI_API_KEY" not in os.environ:
-    raise Exception("OPENAI_API_KEY environment variable not set")
+from .forms import WorkoutForm, LiftForm, SetForm, BodyWeightForm, GoalsForm
+from .models import Workout, Lift, Set, BodyWeight, Goals
 
-client = OpenAI()
-
-'''
-@csrf_exempt
-def generate_workout(request):
-    # Get the user's previous workouts
-    previous_workouts = Workout.objects.all()
-
-    # Format the previous workouts into a string
-    previous_workouts_str = format_workouts(previous_workouts)
-    print(previous_workouts_str)
-    # Generate a response from the OpenAI model
-
-    completion = client.chat.completions.create(
-        model="gpt-3.5-turbo",
-        messages=[
-            {"role": "system", "content": "You are a certified physical trainer. You are to take in the information provided givin body weight, different lifts and weights, and provide a new workout plan for the user. Please format the workout plan as follows: 'Workout: {workout_name}, Lifts: [{lift_name, sets: [{set_reps, set_weight}, ...]}, ...]"},
-            {"role": "user", "content": previous_workouts_str}
-        ]
-    )
-    
-
-    # Get the workout plan from the response
-    workout_plan = completion.choices[0].message.content
-
-    print(workout_plan)
-    # Save the workout plan to the database
-    save_workout_plan(workout_plan)
-
-    return JsonResponse({'success': True})
-
-
-def format_workouts(workouts):
-    # Format the workouts into a list of dictionaries
-    formatted_workouts = []
-    for workout in workouts:
-        lifts = Lift.objects.filter(workout=workout)
-        formatted_workout = {
-            'workout_name': workout.split,
-            'lifts': [{'lift_name': lift.lift, 'sets': [{'set_reps': set.reps, 'set_weight': set.weight} for set in Set.objects.filter(lift=lift)]} for lift in lifts]
-        }
-        formatted_workouts.append(formatted_workout)
-
-    # Convert the list of dictionaries into a JSON string
-    return json.dumps(formatted_workouts)
-
-
-
-def save_workout_plan(workout_plans):
-    # Parse the workout plans from a JSON string into a list
-    workout_plans = json.loads(workout_plans)
-
-    # Get the current date
-    current_date = datetime.now().date()
-
-    # Loop through the workout plans
-    for i, workout_plan in enumerate(workout_plans):
-        # Create a new workout with a date
-        workout = Workout(split=workout_plan['workout_name'], date=current_date + timedelta(days=i))
-        workout.save()
-
-        # Create the lifts and sets for the workout
-        for lift_data in workout_plan['lifts']:
-            lift = Lift(workout=workout, lift=lift_data['lift_name'], sets=len(lift_data['sets']))
-            lift.save()
-            for set_data in lift_data['sets']:
-                set = Set(lift=lift, weight=set_data['set_weight'], reps=set_data['set_reps'])
-                set.save()
-'''
 
 def get_workout_data(request):
     lift_names = ['bench', 'squat', 'curls', 'db bench']

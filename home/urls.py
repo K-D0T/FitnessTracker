@@ -1,5 +1,4 @@
 from django.urls import path
-from django.contrib import admin
 from . import views
 
 app_name = 'home'
@@ -15,6 +14,5 @@ urlpatterns = [
     path('rate_workout/<int:workout_id>/', views.rate_workout, name='rate_workout'),
     path('motivation/', views.motivation, name='motivation'),
     path('update_goal/', views.update_goal, name='update_goal'),
-    #path('generate_workout/', views.generate_workout, name='generate_workout'),
 
 ]
