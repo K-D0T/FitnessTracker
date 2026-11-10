@@ -1,18 +1,17 @@
 from django.contrib import admin
-from django.urls import path, include
-from django.conf import settings
-from django.conf.urls.static import static
-from django.views.static import serve
-from django.urls import re_path
+from django.urls import include, path
 
 urlpatterns = [
     path('admin/', admin.site.urls),
+    # Login / logout / password-change views for the single-user setup.
+    path('accounts/', include('django.contrib.auth.urls')),
     path('', include('home.urls')),
-    # ... other app urls ...
-] + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
+]
 
-if settings.DEBUG:
-    urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
-    urlpatterns += [
-        re_path(r'^media/(?P<path>.*)$', serve, {'document_root': settings.MEDIA_ROOT}),
-    ]
+# Static files are served automatically by django.contrib.staticfiles when
+# DEBUG is on, and by the web server (from STATIC_ROOT) in production, so
+# there is deliberately no static()/serve() route here. The previous version
+# called static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT) with
+# both settings undefined, which Django defaulted to '/' and '', producing a
+# catch-all route that served the whole project directory -- including
+# db.sqlite3 and settings.py -- over HTTP.

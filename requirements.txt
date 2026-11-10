@@ -1,0 +1,6 @@
+# Runtime dependencies. Install with: pip install -r requirements.txt
+Django>=4.2,<5.0
+
+# Optional: lets settings.py read a local .env file. Safe to omit if you set
+# real environment variables instead.
+python-dotenv>=1.0,<2.0

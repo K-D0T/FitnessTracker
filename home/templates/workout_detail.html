@@ -5,7 +5,8 @@
 <link rel="stylesheet" href="{% static 'workout_detail.css' %}">
 <body>
     <h1>Fitness Tracker</h1>
-    <h2>Workout {{ workout.split }} - {{ workout.date }}</h2>
+    <h2>{{ workout.get_split_display }} workout - {{ workout.date }}</h2>
+    <form style="display: none;">{% csrf_token %}</form>
     {% for data in workout_data %}
         <div class="lift">
             <h3 class="lift-header" data-lift-id="{{ data.lift.id }}">
@@ -23,9 +24,6 @@
                     <tbody>
                         {% for set in data.sets %}
                         <tr>
-                            <form method="post">
-                                {% csrf_token %}
-                            </form>
                             <th>Reps: {{ set.reps }}</th>
                             <th>Weight: {{ set.weight }}</th>
                             <td><button class="remove-set" data-set-id="{{ set.id }}">&#x1F5D1;</button></td>

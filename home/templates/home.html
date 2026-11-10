@@ -22,7 +22,9 @@
     <canvas id="bodyWeightChart" style="padding-bottom: 20px;"></canvas>
     <form id="bodyweightForm" method="POST" style="display: none;">
         {% csrf_token %}
+        <input type="hidden" name="form_type" value="bodyweight">
         {{ bodyWeightForm.weight }}
+        {{ bodyWeightForm.date }}
         <button class="submitbutton">Submit</button>
     </form>
     <button id="showFormButton" class="bodyweightbutton">Add Bodyweight</button>
@@ -48,6 +50,7 @@
     <!-- Form to add a new goal (hidden by default) -->
     <form id="goalForm" method="POST" style="display: none;">
         {% csrf_token %}
+        <input type="hidden" name="form_type" value="goal">
         {{ goalForm.goal }}
         <button class="submitGoalbutton">Submit Goal</button>
     </form>
@@ -58,7 +61,13 @@
     
 </div>
 
+{{ dates|json_script:"bodyweight-dates" }}
+{{ weights|json_script:"bodyweight-weights" }}
+
 <script>
+    const bodyweightDates = JSON.parse(document.getElementById('bodyweight-dates').textContent);
+    const bodyweightWeights = JSON.parse(document.getElementById('bodyweight-weights').textContent);
+
     // Get all checkboxes and labels
     var checkboxes = document.querySelectorAll('input[type=checkbox]');
     var labels = document.querySelectorAll('label');
@@ -71,7 +80,7 @@
     
             // Send an AJAX request to the server
             var xhr = new XMLHttpRequest();
-            xhr.open('POST', '/update_goal/', true);  // Replace '/update_goal/' with the actual URL
+            xhr.open('POST', '{% url "home:update_goal" %}', true);
             xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
             xhr.setRequestHeader('X-CSRFToken', '{{ csrf_token }}');
             xhr.send('goalId=' + goalId + '&completed=' + this.checked);
@@ -96,10 +105,10 @@
     var chart = new Chart(ctx, {
         type: 'line',
         data: {
-            labels: {{ dates|safe }},
+            labels: bodyweightDates,
             datasets: [{
                 label: 'Body Weight',
-                data: {{ weights|safe }},
+                data: bodyweightWeights,
                 borderColor: 'rgb(75, 192, 192)',
                 tension: 0.5,
             }]
@@ -139,7 +148,7 @@
         var ctx = document.getElementById('liftsOverTimeChart').getContext('2d');
 
         // Make an AJAX request to the Django view
-        fetch('/get_workout_data/')
+        fetch('{% url "home:get_workout_data" %}')
             .then(response => response.json())
             .then(data => {
                 // Create a set of all unique dates

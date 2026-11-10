@@ -3,6 +3,7 @@
 {% load static %}
 <link rel="stylesheet" href="{% static 'add_lift.css' %}">
     <h1>Add Lift for {{ date }} {{ workoutType }}</h1>
+    {% if error %}<p class="form-error">{{ error }}</p>{% endif %}
     <div class="addLiftContainer">
         <form method="post">
             {% csrf_token %}
