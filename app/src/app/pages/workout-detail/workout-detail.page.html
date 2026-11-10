@@ -1,0 +1,98 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-back-button defaultHref="/workouts"></ion-back-button>
+    </ion-buttons>
+    <ion-title>
+      @if (workout()) {
+        {{ splitLabels[workout()!.split] }}
+      } @else {
+        Workout
+      }
+    </ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  @if (loading()) {
+    <div class="ion-padding ion-text-center"><ion-spinner name="crescent"></ion-spinner></div>
+  } @else if (error()) {
+    <div class="ion-padding"><ion-note color="danger">{{ error() }}</ion-note></div>
+  } @else if (workout(); as w) {
+    <div class="ion-padding">
+      <h2>{{ w.date }}</h2>
+      <ion-note>{{ w.lifts.length }} lifts &middot; {{ totalSets() }} sets</ion-note>
+    </div>
+
+    @if (w.lifts.length === 0) {
+      <div class="ion-padding ion-text-center">
+        <p>No lifts yet.</p>
+      </div>
+    } @else {
+      <ion-accordion-group>
+        @for (lift of w.lifts; track lift.id) {
+          <ion-accordion [value]="lift.id">
+            <ion-item slot="header">
+              <ion-label>
+                <h3>{{ lift.name }}</h3>
+                <p>{{ lift.lift_sets.length }} sets</p>
+              </ion-label>
+            </ion-item>
+            <div slot="content">
+              <ion-list>
+                @for (set of lift.lift_sets; track set.id) {
+                  <ion-item>
+                    <ion-label>{{ set.reps }} reps &times; {{ set.weight }}</ion-label>
+                    <ion-button
+                      slot="end"
+                      fill="clear"
+                      color="danger"
+                      (click)="confirmRemoveSet(set.id)"
+                      [attr.aria-label]="'Delete set of ' + set.reps + ' reps'"
+                    >
+                      <ion-icon name="trash-outline" slot="icon-only"></ion-icon>
+                    </ion-button>
+                  </ion-item>
+                }
+              </ion-list>
+            </div>
+          </ion-accordion>
+        }
+      </ion-accordion-group>
+    }
+
+    <div class="ion-padding">
+      <h3>Rate this workout</h3>
+      <div class="stars">
+        @for (value of stars; track value) {
+          <ion-button
+            fill="clear"
+            size="small"
+            (click)="rate(value)"
+            [attr.aria-label]="value + ' stars'"
+          >
+            <ion-icon
+              slot="icon-only"
+              [name]="(w.rating ?? 0) >= value ? 'star' : 'star-outline'"
+              [color]="(w.rating ?? 0) >= value ? 'warning' : 'medium'"
+            ></ion-icon>
+          </ion-button>
+        }
+      </div>
+
+      <ion-button expand="block" fill="outline" color="danger" (click)="confirmDeleteWorkout()">
+        Delete workout
+      </ion-button>
+    </div>
+  }
+</ion-content>
+
+@if (workout()) {
+  <ion-footer>
+    <ion-toolbar>
+      <ion-button expand="block" [routerLink]="['/workouts', id(), 'add-lift']">
+        Add lift
+      </ion-button>
+    </ion-toolbar>
+  </ion-footer>
+}

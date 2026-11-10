@@ -1,0 +1,10 @@
+.chart-box {
+  position: relative;
+  height: 220px;
+  margin-bottom: 1rem;
+}
+
+.done::part(label) {
+  text-decoration: line-through;
+  opacity: 0.6;
+}

@@ -1,0 +1,98 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-title>Fitness Tracker</ion-title>
+    <ion-buttons slot="end">
+      <ion-button (click)="signOut()" aria-label="Sign out">
+        <ion-icon name="log-out-outline" slot="icon-only"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <ion-refresher slot="fixed" (ionRefresh)="handleRefresh($event)">
+    <ion-refresher-content></ion-refresher-content>
+  </ion-refresher>
+
+  @if (loading()) {
+    <div class="ion-padding ion-text-center"><ion-spinner name="crescent"></ion-spinner></div>
+  } @else {
+    @if (error()) {
+      <div class="ion-padding"><ion-note color="danger">{{ error() }}</ion-note></div>
+    }
+
+    <!-- Bodyweight -->
+    <div class="ion-padding">
+      <h2>Bodyweight</h2>
+      @if (hasBodyweights()) {
+        <div class="chart-box">
+          <canvas baseChart [type]="'line'" [data]="bodyweightChart().data"
+                  [options]="bodyweightChart().options"></canvas>
+        </div>
+      } @else {
+        <ion-note>No weigh-ins yet.</ion-note>
+      }
+
+      <form [formGroup]="weightForm" (ngSubmit)="saveWeight()">
+        <ion-list>
+          <ion-item>
+            <ion-input formControlName="weight" label="Weight" labelPlacement="stacked"
+                       type="number" inputmode="decimal" min="1"></ion-input>
+            <ion-input formControlName="date" label="Date" labelPlacement="stacked"
+                       type="date"></ion-input>
+          </ion-item>
+        </ion-list>
+        <ion-button type="submit" expand="block" fill="outline">Log weight</ion-button>
+      </form>
+    </div>
+
+    <!-- Lift progress -->
+    <div class="ion-padding">
+      <h2>Lift progress</h2>
+      @if (hasProgress()) {
+        <div class="chart-box">
+          <canvas baseChart [type]="'line'" [data]="liftChart().data"
+                  [options]="liftChart().options"></canvas>
+        </div>
+      } @else {
+        <ion-note>Log a lift and your heaviest sets show up here.</ion-note>
+      }
+    </div>
+
+    <!-- Goals -->
+    <div class="ion-padding">
+      <h2>Goals</h2>
+      <ion-list>
+        @for (goal of goals(); track goal.id) {
+          <ion-item-sliding>
+            <ion-item>
+              <ion-checkbox
+                [checked]="goal.completed"
+                (ionChange)="toggleGoal(goal, $event.detail.checked)"
+                labelPlacement="end"
+                [class.done]="goal.completed"
+              >{{ goal.goal }}</ion-checkbox>
+            </ion-item>
+            <ion-item-options side="end">
+              <ion-item-option color="danger" (click)="deleteGoal(goal)">
+                <ion-icon name="trash-outline" slot="icon-only"></ion-icon>
+              </ion-item-option>
+            </ion-item-options>
+          </ion-item-sliding>
+        } @empty {
+          <ion-item><ion-label><ion-note>Nothing set yet.</ion-note></ion-label></ion-item>
+        }
+      </ion-list>
+
+      <form [formGroup]="goalForm" (ngSubmit)="addGoal()">
+        <ion-list>
+          <ion-item>
+            <ion-input formControlName="goal" label="New goal" labelPlacement="floating"
+                       placeholder="Bench 225"></ion-input>
+          </ion-item>
+        </ion-list>
+        <ion-button type="submit" expand="block" fill="outline">Add goal</ion-button>
+      </form>
+    </div>
+  }
+</ion-content>

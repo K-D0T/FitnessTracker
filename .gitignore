@@ -164,3 +164,6 @@ fitnessTrackerEnv/
 
 # collectstatic output
 /staticfiles/
+
+# Personal data export -- keep this out of version control
+fitness-data-export.json
